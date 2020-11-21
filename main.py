@@ -15,7 +15,9 @@ db.init_app(app)
 from user import user
 from product import product
 
+
 app.register_blueprint(product.product_blue)
 app.register_blueprint(user.user_blue)
 
-app.run(host='0.0.0.0', port=5000, debug=True)
+app.run(host='0.0.0.0', port=5000)
+
