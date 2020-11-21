@@ -7,7 +7,7 @@ from product import product_dao
 
 product_blue = Blueprint('product_blue', __name__)
 
-#메인페이지
+#메인페이지 1차
 @product_blue.route('/')
 def main_page():
     data_new = product_dao.post_list(0)
@@ -38,11 +38,22 @@ def post_detail(post_idx):
     return html
 
 
-#구독페이지
-@product_blue.route('/subscribe', methods=['post'])
+#구독페이지 1차
+@product_blue.route('/subscribe')
 def subscribe_list():
-    html = render_template('subscribe.html') #user, 구독 리스트(이미지 등), 좋아요, 댓글 등
-
+    if 'user_idx' in session:
+        user_idx = session['user_idx']
+    else:
+        user_idx = 2
+    
+    post_list = product_dao.sub_post(user_idx)
+    for post in post_list:
+        if post['comment_count'] != 0:
+            comments = product_dao.post_comment(post['post_idx'])
+            post['comments'] = comments        
+    html = render_template('subscribe.html', post_list=post_list) #user, 구독 리스트(이미지 등), 좋아요, 댓글 등
+    return html
+ 
 #구독추가
 
 #구독취소
