@@ -89,7 +89,7 @@ def add_subscription():
 def wishlist():
     if 'user_idx' in session:
         user_idx = session['user_idx']
-    esle:
+    else:
         user_idx = 2
         
     data = get_wishlist(user_idx)

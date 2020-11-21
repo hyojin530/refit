@@ -66,7 +66,7 @@ def shopping_cart():
     return html
 
 #장바구니 추가
-@user_blue('/add_cart_pro')
+@user_blue.route('/add_cart_pro')
 def add_cart():
     user_idx = session['user_idx']
     post_idx = 1
@@ -76,7 +76,7 @@ def add_cart():
     return 'OK'
 
 #장바구니 삭제
-@user_blue('/delete_cart_pro')
+@user_blue.route('/delete_cart_pro')
 def delete_cart():
     user_idx = session['user_idx']
     post_idx = 1
