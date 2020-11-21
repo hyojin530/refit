@@ -12,15 +12,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db.init_app(app)
 
-@app.route('/test')
-def index():
-    return 'this is index page, OK'
-
-
-import product from product
-import user from user
+from user import user
+from product import product
 
 app.register_blueprint(product.product_blue)
 app.register_blueprint(user.user_blue)
 
-app.run(host='0.0.0.0', port=5000)
+app.run(host='0.0.0.0', port=5000, debug=True)

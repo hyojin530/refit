@@ -1,1 +1,1 @@
-from connection.mysql_login import get_connection
+from connection.mysql_connect import get_connection
