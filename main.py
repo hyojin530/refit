@@ -21,7 +21,7 @@ def please_login():
     if 'user_idx' in session:
         return redirect('/home')
     else:
-        return redicect('/login')
+        return redirect('/login')
 
 app.register_blueprint(product.product_blue)
 app.register_blueprint(user.user_blue)
