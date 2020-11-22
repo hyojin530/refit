@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
-images/icons/logo1.png
+
 	<link rel="icon" type="image/png" href="{{url_for('static',filename='images/icons/favicon.ico/')}}">
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='vendor/bootstrap/css/bootstrap.min.css')}}">
@@ -71,9 +71,7 @@ images/icons/logo1.png
 					<div class="container-login100-form-btn">
 						<div class="wrap-login100-form-btn">
 							<div class="login100-form-bgbtn"></div>
-							<form method="POST" action = "../sd.py">
-								<div class="g-signin2" data-onsuccess="onSignIn"></div>
-							</form>	
+							  <div class="g-signin2" data-onsuccess="onSignIn"></div>
 						</div>
 					</div>
 
@@ -97,38 +95,33 @@ images/icons/logo1.png
 	
 	
 	
-<script>
+	<script>
 	function onSignIn(googleUser) {
-		var profile = googleUser.getBasicProfile();
+	  var profile = googleUser.getBasicProfile();
+	  
+	  var dictlogin ={};	
+	  dictlogin['User_Id'] =  profile.getId()
+	  dictlogin['User_Name'] =  profile.getName()
+	  dictlogin['User_Image_URL'] =  profile.getImageUrl()
+	  dictlogin['User_Email'] =  profile.getEmail()
 
-		var dictlogin = {};
-		dictlogin['User_Id'] = profile.getId()
-		dictlogin['User_Name'] = profile.getName()
-		dictlogin['User_Image_URL'] = profile.getImageUrl()
-		dictlogin['User_Email'] = profile.getEmail()
+	  $.ajax({
+		  		url: '/user_login_pro',
+				type: 'POST',
+				data: dictlogin,
 
-		console.log(profile.getId());
-		console.log(profile.getName());
-		console.log(profile.getEmail());
-		console.log(dictlogin);
+				success: function(response) {
 
-		$.ajax({
-			url: '/user_login_pro',
-			type: 'POST',
-			data: dictlogin,
+					alert('로그인이 완료되었습니다');
 
-			success: function (response) {
-
-				alert('로그인이 완료되었습니다');
-
-				location.replace("/");
-
-			},
-			error: function (data) { console.log("에이젝스 실패") },
+					location.replace("/");
+					
+				},
+				error : function(data) { console.log("에이젝스 실패")},
 
 
-
-		});
+			
+			});
 
 
 	}</script>
