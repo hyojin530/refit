@@ -97,34 +97,38 @@ images/icons/logo1.png
 	
 	
 	
-	<script>
+<script>
 	function onSignIn(googleUser) {
-	  var profile = googleUser.getBasicProfile();
-	  
-	  var dictlogin ={};	
-	  dictlogin['User_Id'] =  profile.getId()
-	  dictlogin['User_Name'] =  profile.getName()
-	  dictlogin['User_Image_URL'] =  profile.getImageUrl()
-	  dictlogin['User_Email'] =  profile.getEmail()
-	  
+		var profile = googleUser.getBasicProfile();
 
-	  $.ajax({
-		  		url: "/user_login_pro",
-				type: 'POST',
-				data: dictlogin,
-				dataType: 'json',
-				success: function(response) {
+		var dictlogin = {};
+		dictlogin['User_Id'] = profile.getId()
+		dictlogin['User_Name'] = profile.getName()
+		dictlogin['User_Image_URL'] = profile.getImageUrl()
+		dictlogin['User_Email'] = profile.getEmail()
 
-					alert('로그인이 완료되었습니다');
+		console.log(profile.getId());
+		console.log(profile.getName());
+		console.log(profile.getEmail());
+		console.log(dictlogin);
 
-					document.id.action="http://localhost:5000/main.html";
-					document.id.submit();
+		$.ajax({
+			url: '/user_login_pro',
+			type: 'POST',
+			data: dictlogin,
 
-				}
-			});
+			success: function (response) {
+
+				alert('로그인이 완료되었습니다');
+
+				location.replace("/");
+
+			},
+			error: function (data) { console.log("에이젝스 실패") },
 
 
-	
+
+		});
 
 
 	}</script>
