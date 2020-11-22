@@ -105,15 +105,11 @@ images/icons/logo1.png
 	  dictlogin['User_Image_URL'] =  profile.getImageUrl()
 	  dictlogin['User_Email'] =  profile.getEmail()
 
-	  console.log(profile.getId());
-	  console.log(profile.getName());
-	  console.log(profile.getEmail());
-		
 	  $.ajax({
 		  		url: '/user_login_pro',
 				type: 'POST',
-				data: JSON.stringify(dictlogin),
-				contentType: 'application/json',
+				data: dictlogin,
+
 				success: function(response) {
 
 					alert('로그인이 완료되었습니다');
