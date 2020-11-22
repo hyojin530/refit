@@ -112,9 +112,9 @@ def wishlist():
     else:
         user_idx = 2
         
-    data = get_wishlist(user_idx)
+    data = product_dao.get_wishlist(user_idx)
     
-    html = render_template('like.html', data=data)
+    html = render_template('like.html', post_list=data)
     
     return html
 

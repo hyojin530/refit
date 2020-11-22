@@ -189,7 +189,7 @@ def delete_sub(following, followed):
 
 #test, not in notion to
 def get_wishlist(user_idx):
-    sql = '''select posts.post_idx, posts.user_idx, title, description, tags, post_like, location, comment_count 
+    sql = '''select posts.post_idx, posts.user_idx, title, description, tags, post_like, location
              from posts inner join post_file on posts.post_idx=post_file.post_idx
              where posts.post_idx in (select post_idx from wishlist where user_idx=%s)
              and file_idx in (select min(file_idx) from post_file group by post_idx)'''
@@ -202,6 +202,9 @@ def get_wishlist(user_idx):
     finally:
         if conn is not None: conn.close()
     
+    if not result:
+        return False
+    
     data_list = []
     for row in result:
         temp_dict = {}
@@ -212,7 +215,6 @@ def get_wishlist(user_idx):
         temp_dict['tags'] = row[4]
         temp_dict['post_like'] = row[5]
         temp_dict['img_url'] = row[6]
-        temp_dict['comment_count'] = row[7]
         data_list.append(temp_dict)    
     print(data_list)
     return data_list  
