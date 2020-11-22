@@ -161,8 +161,9 @@ def post_comment(post_idx):
     return data_list
 
 def sub_post_list(user_idx):
-    sql = '''select posts.post_idx, posts.user_idx, title, description, tags, post_like, location, comment_count 
+    sql = '''select posts.post_idx, posts.user_idx, name, email, user_img, title, description, tags, post_like, location, comment_count 
              from posts inner join post_file on posts.post_idx=post_file.post_idx
+             inner join user on user.user_idx=posts.user_idx
              where posts.user_idx in (select followed from user_follow where following=%s)
              and file_idx in (select min(file_idx) from post_file group by post_idx)'''
              
@@ -182,12 +183,15 @@ def sub_post_list(user_idx):
         temp_dict = {}
         temp_dict['post_idx'] = row[0]
         temp_dict['user_idx'] = row[1]
-        temp_dict['title'] = row[2]
-        temp_dict['description'] = row[3]
-        temp_dict['tags'] = row[4]
-        temp_dict['post_like'] = row[5]
-        temp_dict['img_url'] = row[6]
-        temp_dict['comment_count'] = row[7]
+        temp_dict['user_name'] = row[2]
+        temp_dict['user_email'] = row[3]
+        temp_dict['user_img'] = row[4]
+        temp_dict['title'] = row[5]
+        temp_dict['description'] = row[6]
+        temp_dict['tags'] = row[7]
+        temp_dict['post_like'] = row[8]
+        temp_dict['img_url'] = row[9]
+        temp_dict['comment_count'] = row[10]
         data_list.append(temp_dict)    
     print(data_list)
     return data_list    
