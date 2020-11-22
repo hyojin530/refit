@@ -3,16 +3,16 @@ import pymysql
 
 
 #input column 수정
-def add_post(user_idx, title):
-    sql = '''insert into posts(user_idx, title, written_time)
-             values(%s, %s, now())'''
+def add_post(user_idx, title, description, tags, price, category, size, brand, certificate, receipt, image_count):
+    sql = '''insert into posts(user_idx, title, written_time, description, tags, price, category, size, brand, certificate, receipt, image_count, post_like, sell_yn, comment_count)
+             values(%s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, 0, 0, 0)'''
     
     sql1 = '''select last_insert_id()'''
     
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute(sql, (user_idx, title))
+        cursor.execute(sql, (user_idx, title, description, tags, price, category, size, brand, certificate, receipt, image_count))
         conn.commit()
         cursor.execute(sql1)
         result = cursor.fetchone()
@@ -74,7 +74,8 @@ def post_list(order_type):
 
 #dict
 def post_detail(post_idx):
-    sql = '''select * from posts where post_idx=%s'''
+    sql = '''select post_idx, user_idx, title, written_time, description, tags, price, category, size, brand, certificate, receipt, post_like, sell_yn, comment_count 
+             from posts where post_idx=%s'''
     
     try:
         conn = get_connection()
@@ -84,7 +85,55 @@ def post_detail(post_idx):
     finally:
         if conn is not None: conn.close()
     
-    return result
+    if not result:
+        return False
+    
+    data = {}
+
+    data['post_idx'] = result[0]
+    data['user_idx'] = result[1]
+    data['title'] = result[2]
+    data['time'] = result[3]
+    data['text'] = result[4]
+    data['tags'] = result[5]
+    data['price'] = result[6]
+    data['category'] = result[7]
+    data['size'] = result[8]
+    data['brand'] = result[9]
+    data['certificate'] = result[10]
+    data['receipt'] = result[11]
+    data['post_like'] = result[12]
+    data['sell_yn'] = result[13]
+    data['comment_count'] = result[14]
+    
+    return data
+
+def add_comment(post_idx, user_idx, text):
+    sql = '''insert into comment (post_idx, user_idx, text, to_comment)
+             values (%s, %s, %s, 0)'''
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, (post_idx, user_idx, text))
+        conn.commit()
+    finally:
+        if conn is not None: conn.close()
+    
+    return 'OK'
+
+def update_comment_count(post_idx, comment_count):
+    sql = '''update posts set comment_count=%s where post_idx=%s'''
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, (post_idx, comment_count))
+        conn.commit()
+    finally:
+        if conn is not None: conn.close()
+    
+    return 'OK'
 
 def post_comment(post_idx):
     sql = '''select post_idx, user_idx, text from comment
