@@ -58,6 +58,9 @@ def post_list(order_type):
     finally:
         if conn is not None: conn.close()
     
+    if not result:
+        return False
+    
     data_list = []
     for row in result:
         temp_dict = {}
@@ -97,6 +100,9 @@ def sub_post(user_idx):
     finally:
         if conn is not None: conn.close()
 
+    if not result:
+        return False
+
     data_list = []
     for row in result:
         temp_dict = {}
@@ -123,7 +129,10 @@ def post_comment(post_idx):
         result = cursor.fetchall()
     finally:
         if conn is not None: conn.close()
-        
+    
+    if not result:
+        return False
+    
     data_list = []
     for row in result:
         temp_dict = {}

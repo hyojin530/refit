@@ -17,16 +17,17 @@ def main_page():
     html = render_template('main.html', data_new=data_new, data_like=data_like)
     return html
 
-#검색 get
+#검색 get 얘기가 필요..
 @product_blue.route('/search', methods=['get'])
 def search_posts():
     html = render_template('/search_result') #검색 결과 페이지
     return html
 
-#등록페이지
-@product_blue.route('/post')
+#등록페이지 얘기가 필요..
+@product_blue.route('/write_post')
 def register_post():
     html = render_template('register.html') #필요한거 없을듯..? user 정보?
+    return html
 
 #상품 업로드 틀   
 @product_blue.route('/upload_post', methods=['post'])
@@ -51,11 +52,15 @@ def upload_post():
     return 'OK'
 
 
-#상세페이지
+#상세페이지 컬럼 정해야
 @product_blue.route('/post/post_id=<post_idx>', methods=['get'])
 def post_detail(post_idx):
-    detail = product_dao.post_detail(post_idx)
-    html = render_template('detail.html', data=data)
+    post_detail = product_dao.post_detail(post_idx)
+    
+    if post_detail['comment_count'] != 0:
+        comments = product_dao.post_comment(post_idx)
+        post_detail['comments'] = comments
+    html = render_template('detail.html', data=post_detail)
     return html
 
 #구독페이지 1차
@@ -67,6 +72,11 @@ def subscribe_list():
         user_idx = 2
     
     post_list = product_dao.sub_post(user_idx)
+    
+    if not post_list:
+        html = render_template('subscribe.html', post_list=False)
+        return html
+    
     for post in post_list:
         if post['comment_count'] != 0:
             comments = product_dao.post_comment(post['post_idx'])

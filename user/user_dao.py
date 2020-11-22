@@ -32,8 +32,32 @@ def user_login(id):
     finally:
         if conn is not None: conn.close()
         
+    if not result:
+        return False
+        
     return result[0]
 
+
+#can change columns
+def user_info(user_idx):
+    sql = '''select id, name from user where user_idx=%s'''
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, user_idx)
+        result = cursor.fetchone()
+    finally:
+        if conn is not None: conn.close()
+        
+    if not result:
+        return False
+    
+    data = {}
+    data['id'] = result[0]
+    data['name'] = result[1]
+    
+    return data
 
 def mypost_list(user_idx):
     sql = '''select posts.post_idx, location, sell_yn
@@ -49,6 +73,9 @@ def mypost_list(user_idx):
     finally:
         if conn is not None: conn.close()
     
+    if not result:
+        return False
+    
     data_list = []
     for row in result:
         temp_dict = {}
@@ -59,23 +86,6 @@ def mypost_list(user_idx):
     print(data_list)
     return data_list
 
-#can change columns
-def user_info(user_idx):
-    sql = '''select id, name from user where user_idx=%s'''
-    
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute(sql, user_idx)
-        result = cursor.fetchone()
-    finally:
-        if conn is not None: conn.close()
-        
-    data = {}
-    data['id'] = result[0]
-    data['name'] = result[1]
-    
-    return data
 
 def cart_list(user_idx):
     sql = '''select posts.post_idx, title, price, location
@@ -92,6 +102,9 @@ def cart_list(user_idx):
     finally:
         if conn is not None: conn.close()
         
+    if not result:
+        return False
+    
     data_list = []
     for row in result:
         temp_dict = {}
@@ -130,3 +143,28 @@ def delete_cart(user_idx, post_idx):
         if conn is not None: conn.close()
     
     return 'OK'
+
+def check_post(post_idx):
+    sql = '''select posts.post_idx, title, price, location
+             from posts inner join post_file on posts.post_idx=post_file.post_idx
+             where posts.post_idx=%s
+             and file_idx in (select min(file_idx) from post_file group by post_idx)'''
+             
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, post_idx)
+        result = cursor.fetchone()
+    finally:
+        if conn is not None: conn.close()
+    
+    if not result:
+        return False
+    
+    data = {}
+    data['post_idx'] = result[0]
+    data['title'] = result[1]
+    data['price'] = result[2]
+    data['location'] = result[3]
+    
+    return data

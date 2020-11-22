@@ -26,15 +26,18 @@ def user_join():
 @user_blue.route('/user_login_pro', methods=['post'])
 def user_login():
     user_id = 'id'
-    
     user_idx = user_dao.user_login(user_id)
+    
+    if not user_idx:
+        return 'NO'
+    
     session['user_idx'] = user_idx
     session['login'] = 1
     
     return 'OK'
 
 #logout post if not?
-@user_blue.route('/user_logout_pro', methods=['post'])
+@user_blue.route('/user_logout_pro')
 def user_logout():
     session.clear()
     return 'OK'
@@ -85,6 +88,17 @@ def delete_cart():
     
     return 'OK'
 
-#좋아요페이지
-
 #결제페이지
+@user_blue.route('/payment')
+def check_payment():
+    user_idx = session['user_idx']
+    post_idx_list = ['if list']
+    
+    data_list = []
+    for post_idx in post_idx_list:
+        data = user_dao.check_post(post_idx)
+        data_list.append(data)
+    
+    html = render_template('payment.html', data_list=data_list)
+    return html
+        
