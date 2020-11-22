@@ -165,7 +165,8 @@ def sub_post_list(user_idx):
              from posts inner join post_file on posts.post_idx=post_file.post_idx
              inner join user on user.user_idx=posts.user_idx
              where posts.user_idx in (select followed from user_follow where following=%s)
-             and file_idx in (select min(file_idx) from post_file group by post_idx)'''
+             and file_idx in (select min(file_idx) from post_file group by post_idx)
+             order by posts.post_idx desc'''
              
     try:
         conn = get_connection()
@@ -245,7 +246,8 @@ def get_wishlist(user_idx):
     sql = '''select posts.post_idx, posts.user_idx, title, description, tags, post_like, location
              from posts inner join post_file on posts.post_idx=post_file.post_idx
              where posts.post_idx in (select post_idx from wishlist where user_idx=%s)
-             and file_idx in (select min(file_idx) from post_file group by post_idx)'''
+             and file_idx in (select min(file_idx) from post_file group by post_idx)
+             order by posts.post_idx desc'''
 
     try:
         conn = get_connection()

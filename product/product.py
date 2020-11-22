@@ -145,7 +145,6 @@ def wishlist():
         
     data = product_dao.get_wishlist(user_idx)
     html = render_template('like.html', post_list=data)
-    
     return html
 
-#위시리스트
+#위시리스트 업데이트
