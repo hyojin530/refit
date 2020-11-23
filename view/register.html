@@ -345,6 +345,7 @@
 								success: function (response) {
 									if (response=='OK'){
 										alert('상품 등록이 완료되었습니다');
+										location.href = "/home";
 									}
 								},
 								error: function (data) { console.log("에이젝스 실패") },

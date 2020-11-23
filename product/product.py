@@ -38,7 +38,7 @@ def upload_post():
         user_idx = 1
     
     #title = request.form['title']
-    title = 'need or not'
+    title = 'title'
     description_tags = request.form['describe']
     price = request.form['price']
     category = request.form['category']
@@ -47,22 +47,27 @@ def upload_post():
     gender = request.form['gender']
     certificate = request.form['isguarantee']
     receipt = request.form['isreceipt']
-    file_list = request.files['file']
+    post_file = request.files['file']
     img_count = 1
-    
-    print(request.form)
-    
-    post_dir = current_app.config['POST_FILE']
 
-    #post_idx = product_dao.add_post(user_idx, title, description, tags, price, category, size, brand, certificate, receipt)
+    post_dir = current_app.config['POST_FILE']
     
-    #n=1
-    #for post_file in file_list:
-    #    f_name = datetime.datetime.now().strftime("%Y%m%d_")+'{post_idx}_{num}'.format(post_idx=post_idx, num=n)+secure_filename(post_file.filename)
-    #    f_location = os.path.join(post_dir,f_name)
-    #    post_file.save(f_location)
-    #    user_dao.add_post_file(post_idx, 1, f_location)
-    #    n += 1
+    print(description_tags)
+    
+    tags = ''
+    if '#' in description_tags:
+        text_list = description_tags.split(' ')
+
+        for word in text_list:
+            if '#' in word:
+                tags += word[1:]+' '
+
+    post_idx = product_dao.add_post(user_idx, title, description_tags, tags, price, category, size, brand, gender, certificate, receipt, img_count)
+    
+    f_name = datetime.now().strftime("%Y%m%d_")+'{post_idx}'.format(post_idx=post_idx)+secure_filename(post_file.filename)
+    f_location = os.path.join(post_dir,f_name)
+    post_file.save(f_location)
+    product_dao.add_post_file(post_idx, 1, f_location)
 
     return 'OK'
 
