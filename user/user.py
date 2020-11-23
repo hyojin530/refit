@@ -9,23 +9,22 @@ user_blue = Blueprint('user_blue', __name__)
 #login page
 @user_blue.route('/login')
 def login():
+    if 'user_idx' in session:
+        return redirect('/home')
     html = render_template('/login.html')
     return html
-
-#join post
-@user_blue.route('/user_join_pro', methods=['post'])
-def user_join():
-    user_id = 'id'
-    user_name = 'nmae'
-    
-    user_dao.add_user(user_id, user_name)
-    
-    return 'OK'
 
 #login post
 @user_blue.route('/user_login_pro', methods=['post'])
 def user_login():
-    user_id = 'id'
+    user_id = request.form['User_Id']
+    user_name = request.form['User_Name']
+    user_email = request.form['User_Email']
+    user_img = request.form['User_Image_URL']
+    
+    if not user_dao.check_user(user_id):
+        user_dao.add_user(user_id, user_name, user_email, user_img)
+    
     user_idx = user_dao.user_login(user_id)
     
     if not user_idx:
@@ -34,6 +33,7 @@ def user_login():
     session['user_idx'] = user_idx
     session['login'] = 1
     
+    print(user_idx)
     return 'OK'
 
 #logout post if not?
@@ -41,6 +41,8 @@ def user_login():
 def user_logout():
     session.clear()
     return 'OK'
+
+#좋아요 업데이트
 
 #mypage, 다른사람 페이지 접근 시 고려해야함, 좋아요리스트?
 @user_blue.route('/mypage')

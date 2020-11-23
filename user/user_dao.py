@@ -3,16 +3,16 @@ import pymysql
 
 
 #check the db and things that we need
-def add_user(id, name):
-    sql = '''insert into user (id, name, sign_date)
-             values (%s, %s, NOW())'''
+def add_user(user_id, user_name, user_email, user_img):
+    sql = '''insert into user (id, name, email, user_img, sign_date)
+             values (%s, %s, %s, %s, NOW())'''
     
     sql1 = '''select last_insert_id()'''
      
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute(sql, (id, name))
+        cursor.execute(sql, (user_id, user_name, user_email, user_img))
         conn.commit()
         cursor.execute(sql1)
         result = cursor.fetchone()
@@ -20,6 +20,21 @@ def add_user(id, name):
         if conn is not None: conn.close()
         
     return result[0]
+
+def check_user(user_id):
+    sql = '''select * from user where id=%s'''
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, user_id)
+        result = cursor.fetchone()
+    finally:
+        if conn is not None: conn.close()
+        
+    if not result:
+        return False
+    return True
 
 def user_login(id):
     sql = '''select user_idx from user where id=%s'''
@@ -40,7 +55,7 @@ def user_login(id):
 
 #can change columns
 def user_info(user_idx):
-    sql = '''select id, name from user where user_idx=%s'''
+    sql = '''select id, name, email from user where user_idx=%s'''
     
     try:
         conn = get_connection()
@@ -56,6 +71,7 @@ def user_info(user_idx):
     data = {}
     data['id'] = result[0]
     data['name'] = result[1]
+    data['email'] = result[2]
     
     return data
 
