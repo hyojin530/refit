@@ -37,16 +37,18 @@ def upload_post():
     else:
         user_idx = 1
     
-    title = request.form['title']
-    description_tags = request.form['description']
+    #title = request.form['title']
+    title = 'need or not'
+    description_tags = request.form['describe']
     price = request.form['price']
     category = request.form['category']
     size = request.form['size']
     brand = request.form['brand']
-    certificate = request.form['certificate']
-    receipt = request.form['receipt']
-    file_list = request.file.get_list() #check
-    img_count = len(file_list)
+    gender = request.form['gender']
+    certificate = request.form['isguarantee']
+    receipt = request.form['isreceipt']
+    file_list = request.files['file']
+    img_count = 1
     
     print(request.form)
     
