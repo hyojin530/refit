@@ -3,16 +3,16 @@ import pymysql
 
 
 #input column 수정
-def add_post(user_idx, title, description, tags, price, category, size, brand, certificate, receipt, image_count):
-    sql = '''insert into posts(user_idx, title, written_time, description, tags, price, category, size, brand, certificate, receipt, image_count, post_like, sell_yn, comment_count)
-             values(%s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, 0, 0, 0)'''
+def add_post(user_idx, title, description, tags, price, category, size, brand, gender, certificate, receipt, image_count):
+    sql = '''insert into posts(user_idx, title, written_time, description, tags, price, category, size, brand, gender, certificate, receipt, image_count, post_like, sell_yn, comment_count)
+             values(%s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 0, 0, 0)'''
     
     sql1 = '''select last_insert_id()'''
     
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute(sql, (user_idx, title, description, tags, price, category, size, brand, certificate, receipt, image_count))
+        cursor.execute(sql, (user_idx, title, description, tags, price, category, size, brand, gender, certificate, receipt, image_count))
         conn.commit()
         cursor.execute(sql1)
         result = cursor.fetchone()
@@ -22,7 +22,7 @@ def add_post(user_idx, title, description, tags, price, category, size, brand, c
     return result[0]
 
 
-def add_post_file(post_idx):
+def add_post_file(post_idx, file_type, location):
     sql = '''insert into post_file(post_idx, file_type, location)
              values (%s, %s, %s)'''
              
@@ -30,7 +30,7 @@ def add_post_file(post_idx):
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(sql, (post_idx, file_type, location))
-        conn.commit
+        conn.commit()
     finally:
         if conn is not None: conn.close()
     
@@ -72,9 +72,9 @@ def post_list(order_type):
     print(data_list)
     return data_list
 
-#dict
+#한글 인코딩 생각해야됨
 def post_detail(post_idx):
-    sql = '''select post_idx, user_idx, title, written_time, description, tags, price, category, size, brand, certificate, receipt, post_like, sell_yn, comment_count 
+    sql = '''select post_idx, user_idx, title, written_time, description, tags, price, category, size, brand, gender, certificate, receipt, post_like, sell_yn, comment_count 
              from posts where post_idx=%s'''
     
     try:
@@ -100,11 +100,12 @@ def post_detail(post_idx):
     data['category'] = result[7]
     data['size'] = result[8]
     data['brand'] = result[9]
-    data['certificate'] = result[10]
-    data['receipt'] = result[11]
-    data['post_like'] = result[12]
-    data['sell_yn'] = result[13]
-    data['comment_count'] = result[14]
+    data['gender'] = result[10]
+    data['certificate'] = result[11]
+    data['receipt'] = result[12]
+    data['post_like'] = result[13]
+    data['sell_yn'] = result[14]
+    data['comment_count'] = result[15]
     
     return data
 
@@ -135,8 +136,21 @@ def update_comment_count(post_idx, comment_count):
     
     return 'OK'
 
+def delete_comment(comment_idx):
+    sql = '''delete from comment where comment_idx=%s'''
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, comment_idx)
+        conn.commit()
+    finally:
+        if conn is not None: conn.close()
+        
+    return 'OK'
+
 def post_comment(post_idx):
-    sql = '''select post_idx, user_idx, text from comment
+    sql = '''select comment_idx, post_idx, user_idx, text from comment
              where post_idx=%s order by comment_idx'''
              
     try:
@@ -153,9 +167,10 @@ def post_comment(post_idx):
     data_list = []
     for row in result:
         temp_dict = {}
-        temp_dict['post_idx'] = row[0]
-        temp_dict['user_idx'] = row[1]
-        temp_dict['text'] = row[2]
+        temp_dict['comment_idx'] = row[0]
+        temp_dict['post_idx'] = row[1]
+        temp_dict['user_idx'] = row[2]
+        temp_dict['text'] = row[3]
         data_list.append(temp_dict)    
     print(data_list)
     return data_list
@@ -273,3 +288,47 @@ def get_wishlist(user_idx):
         data_list.append(temp_dict)    
     print(data_list)
     return data_list  
+
+def check_wish(user_idx, post_idx):
+    sql = '''select wish_idx from wishlist
+             where user_idx=%s and post_idx=%s'''
+             
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, (user_idx, post_idx))
+        result = cursor.fetchone()
+    finally:
+        if conn is not None: conn.close()
+        
+    if not result:
+        return False
+    
+    return result[0]
+
+def add_wish(user_idx, post_idx):
+    sql = '''insert into wishlist (user_idx, post_idx)
+             values (%s, %s)'''
+             
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, (user_idx, post_idx))
+        conn.commit()
+    finally:
+        if conn is not None: conn.close()
+    
+    return 'OK'
+
+def delete_wish(user_idx, post_idx):
+    sql = '''delete from wishlist where user_idx=%s and post_idx=%s'''
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, (user_idx, post_idx))
+        conn.commit()
+    finally:
+        if conn is not None: conn.close()
+        
+    return 'OK'

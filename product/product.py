@@ -24,7 +24,7 @@ def search_posts():
     return html
 
 #등록페이지 얘기가 필요..
-@product_blue.route('/write_post')
+@product_blue.route('/register')
 def register_post():
     html = render_template('register.html')
     return html
@@ -37,28 +37,37 @@ def upload_post():
     else:
         user_idx = 1
     
-    title = request.form['title']
-    description_tags = request.form['description']
+    #title = request.form['title']
+    title = 'title'
+    description_tags = request.form['describe']
     price = request.form['price']
     category = request.form['category']
     size = request.form['size']
     brand = request.form['brand']
-    certificate = request.form['certificate']
-    receipt = request.form['receipt']
-    file_list = request.file.get_list() #check
-    img_count = len(file_list)
-    
-    post_dir = current_app.config['POST_FILE']
+    gender = request.form['gender']
+    certificate = request.form['isguarantee']
+    receipt = request.form['isreceipt']
+    post_file = request.files['file']
+    img_count = 1
 
-    post_idx = product_dao.add_post(user_idx, title, description, tags, price, category, size, brand, certificate, receipt)
+    post_dir = current_app.config['POST_FILE']
     
-    n=1
-    for post_file in file_list:
-        f_name = datetime.datetime.now().strftime("%Y%m%d_")+'{post_idx}_{num}'.format(post_idx=post_idx, num=n)+secure_filename(post_file.filename)
-        f_location = os.path.join(post_dir,f_name)
-        post_file.save(f_location)
-        user_dao.add_post_file(post_idx, 1, f_location)
-        n += 1
+    print(description_tags)
+    
+    tags = ''
+    if '#' in description_tags:
+        text_list = description_tags.split(' ')
+
+        for word in text_list:
+            if '#' in word:
+                tags += word[1:]+' '
+
+    post_idx = product_dao.add_post(user_idx, title, description_tags, tags, price, category, size, brand, gender, certificate, receipt, img_count)
+    
+    f_name = datetime.now().strftime("%Y%m%d_")+'{post_idx}'.format(post_idx=post_idx)+secure_filename(post_file.filename)
+    f_location = os.path.join(post_dir,f_name)
+    post_file.save(f_location)
+    product_dao.add_post_file(post_idx, 1, f_location)
 
     return 'OK'
 
@@ -81,7 +90,7 @@ def upload_comment():
     if 'user_idx' in session:
         user_idx = session['user_idx']
     else:
-        user_idx = 2
+        return 'NO'
     
     post_idx = request.form['post_idx']
     comment_text = request.form['text']
@@ -92,7 +101,20 @@ def upload_comment():
     
     return 'OK'
     
-#코멘트 삭제?
+#코멘트 삭제? 사용안할수도 있음..
+@product_blue.route('/delete_comment', methods=['post'])
+def delete_comment():
+    if 'user_idx' in session:
+        user_idx = session['user_idx']
+    else:
+        return 'NO'
+    
+    post_idx = request.form['post_idx']
+    comment_idx = request.form['comment']
+    
+    product_dao.delete_comment(comment_idx)
+    
+    return 'OK'
 
 #구독페이지 1차
 @product_blue.route('/subscribe')
@@ -112,11 +134,11 @@ def subscribe_list():
         if post['comment_count'] != 0:
             comments = product_dao.post_comment(post['post_idx'])
             post['comments'] = comments        
-    html = render_template('subscribe.html', post_list=post_list) #user, 구독 리스트(이미지 등), 좋아요, 댓글 등
+    html = render_template('subscribe.html', post_list=post_list)
     return html
  
 #구독추가와 취소를 동시에? 같은버튼?
-@product_blue.route('/subscription_update')
+@product_blue.route('/subscription_update', methods=['post'])
 def add_subscription():
     if 'user_idx' in session:
         user_idx = session['user_idx']
@@ -148,3 +170,20 @@ def wishlist():
     return html
 
 #위시리스트 업데이트
+@product_blue.route('/wishlist_update', methods=['post'])
+def add_wishlist():
+    if 'user_idx' in session:
+        user_idx = session['user_idx']
+    else:
+        return 'NO'
+    
+    post_idx = request.form['user_idx'] #maybe get?
+    
+    checked_idx = product_dao.check_wish(user_idx, post_idx)
+    
+    if not checked_idx:
+        product_dao.add_wish(user_idx, post_idx)
+    else:
+        product_dao.delete_wish(user_idx, post_idx)
+    
+    return 'OK'
