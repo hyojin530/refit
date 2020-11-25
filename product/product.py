@@ -77,7 +77,7 @@ def upload_post():
 @product_blue.route('/post/post_id=<post_idx>', methods=['get'])
 def post_detail(post_idx):
     post_detail = product_dao.post_detail(post_idx)
-    
+
     if post_detail['comment_count'] != 0:
         comments = product_dao.post_comment(post_idx)
         post_detail['comments'] = comments
@@ -90,14 +90,14 @@ def upload_comment():
     if 'user_idx' in session:
         user_idx = session['user_idx']
     else:
-        return 'NO'
+        user_idx = 2
     
     post_idx = request.form['post_idx']
     comment_text = request.form['text']
-    comment_count = request.form['comment']
+    comment_count = request.form['count']
     
     product_dao.add_comment(post_idx, user_idx, comment_text)
-    product_dao.update_comment_count(post_idx, comment_count)
+    product_dao.update_comment_count(post_idx, comment_count+1)
     
     return 'OK'
     
@@ -143,7 +143,7 @@ def add_subscription():
     if 'user_idx' in session:
         user_idx = session['user_idx']
     else:
-        return 'NO'
+        user_idx = 2
     
     followed = request.form['user_idx'] #maybe get?
     
@@ -151,8 +151,10 @@ def add_subscription():
     
     if not checked_idx:
         product_dao.add_sub(user_idx, followed)
+        return 'ADD'
     else:
         product_dao.delete_sub(user_idx, followed)
+        return 'DEL'
     
     return 'OK'
 
@@ -175,15 +177,17 @@ def add_wishlist():
     if 'user_idx' in session:
         user_idx = session['user_idx']
     else:
-        return 'NO'
-    
-    post_idx = request.form['user_idx'] #maybe get?
-    
+        user_idx = 2
+        
+    post_idx = request.form['post_idx']
+
     checked_idx = product_dao.check_wish(user_idx, post_idx)
     
     if not checked_idx:
         product_dao.add_wish(user_idx, post_idx)
+        return 'ADD'
     else:
         product_dao.delete_wish(user_idx, post_idx)
+        return 'DEL'
     
     return 'OK'
