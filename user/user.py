@@ -54,14 +54,24 @@ def add_likepost():
     
     checked_idx = user_dao.check_like(user_idx, post_idx)
     
+    result = {}
+    
     if not checked_idx:
         user_dao.add_like(user_idx, post_idx)
-        return 'ADD'
+        liked = user_dao.count_like(post_idx)
+        user_dao.update_like_count(post_idx, liked+1)
+        result['type'] = 'ADD'
+        result['count'] = liked+1
+        return result
     else:
         user_dao.delete_like(user_idx, post_idx)
-        return 'DEL'
+        liked = user_dao.count_like(post_idx)
+        user_dao.update_like_count(post_idx, liked-1)
+        result['type'] = 'DEL'
+        result['count'] = liked-1
+        return result
     
-    return 'OK'
+    return result
 
 #mypage, 다른사람 페이지 접근 시 고려해야함, 좋아요리스트?
 @user_blue.route('/mypage')

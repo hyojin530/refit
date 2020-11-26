@@ -149,6 +149,35 @@ def check_like(user_idx, post_idx):
     
     return result[0]
 
+def count_like(post_idx):
+    sql = '''select post_like from posts where post_idx=%s'''
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, post_idx)
+        result = cursor.fetchone()
+    finally:
+        if conn is not None: conn.close()
+    
+    if not result:
+        return 0
+    
+    return result[0]
+
+def update_like_count(post_idx, like_count):
+    sql = '''update posts set post_like=%s where post_idx=%s'''
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, (like_count, post_idx))
+        conn.commit()
+    finally:
+        if conn is not None: conn.close()
+        
+    return 'OK'
+
 def add_like(user_idx, post_idx):
     sql = '''insert into like_posts (user_idx, post_idx, datetime)
              values (%s, %s, NOW())'''
