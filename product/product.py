@@ -176,7 +176,7 @@ def add_subscription():
 
 
 #위시리스트페이지
-@product_blue.route('/wishlist')
+@product_blue.route('/bookmark')
 def wishlist():
     if 'user_idx' in session:
         user_idx = session['user_idx']
