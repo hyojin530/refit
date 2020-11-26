@@ -123,14 +123,13 @@ def delete_cart():
 #결제페이지 미완성!!
 @user_blue.route('/payment')
 def check_payment():
-    user_idx = session['user_idx']
-    post_idx_list = ['if list']
+    if 'user_idx' in session:
+        user_idx = session['user_idx']
+    else:
+        user_idx = 2
     
-    data_list = []
-    for post_idx in post_idx_list:
-        data = user_dao.check_post(post_idx)
-        data_list.append(data)
+    data_list = user_dao.pay_list(user_idx)
     
-    html = render_template('payment.html', data_list=data_list)
+    html = render_template('paycomplete.html', data_list=data_list)
     return html
         
