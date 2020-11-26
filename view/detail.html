@@ -163,29 +163,30 @@
                                             <div class="detailimage"><img
                                                     src="{{url_for('static',filename='images/detailimage.png')}}"
                                                     class="detailimage" alt=""></div>
-                                            <p class="captionbox">
+                                            <div class="captionbox">
                                                 <!-- 카키색 야상 하나로 가을 맞이 #ootd #감성룩#아우터 -->
                                                 <p>상품 등록 시간 : {{data.time}}</p>
-                                                <p>해쉬 태그 : {{data.tags}}</p>
                                                 <p>판매 가격 : {{data.price}}</p>
-                                                <p>상품 카테고리 : {{data.category}}</p>
-                                                <p>사이즈 : {{data.size}}</p>
-                                                <p>브랜드 : {{data.brand}}</p>
+                                                <p>{{data.category}} / {{data.size}} / {{data.brand}}</p>
                                                 <p>{{data.gender}}</p>
+                                                <p>{{data.text}}</p>
+                                                
+                                                <p>
                                                 {% if data.certificate == 1 %}
-                                                <p>검증 O</p>
+                                                <span>검증 O / </span>
                                                 {% elif data.receipt == 0 %}
-                                                <p>검증 X</p>
+                                                <span>검증 X / </span>
                                                 {% endif %}
 
                                                 {% if data.receipt == 1 %}
-                                                <p>영수증 O</p>
+                                                <span>영수증 O</span>
                                                 {% elif data.receipt == 0 %}
-                                                <p>영수증 O</p>
+                                                <span>영수증 X</span>
+
+                                                </p>
+                                                
                                                 {% endif %}
-                                            </p>
-
-
+                                            </div>
                                         </div>
 
                                         <div class="bottombox">
