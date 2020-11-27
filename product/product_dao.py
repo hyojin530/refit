@@ -112,6 +112,27 @@ def post_detail(post_idx):
     
     return data
 
+def post_file_list(post_idx):
+    sql = '''select location from post_file where post_idx=%s'''
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, post_idx)
+        result = cursor.fetchall()
+    finally:
+        if conn is not None: conn.close()
+        
+    if not result:
+        return False
+
+    file_list = []
+    
+    for row in result:
+        file_list.append(row[0])
+    print(file_list)
+    return file_list
+
 def add_comment(post_idx, user_idx, text):
     sql = '''insert into comment (post_idx, user_idx, text, to_comment)
              values (%s, %s, %s, 0)'''

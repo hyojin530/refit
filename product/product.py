@@ -25,12 +25,12 @@ def search_posts():
     else:
         user_idx = 2
         
-    text = request.args.get('text')
-
+    text = request.args.get('search_tag')
+    print(text)
     result = product_dao.search_post(text)
 
-    html = render_template('search.html', data=result) #검색 결과 페이지
-    return 'OK'
+    html = render_template('search.html', data_search=result) #검색 결과 페이지
+    return html
 
 #등록페이지 얘기가 필요..
 @product_blue.route('/register')
@@ -91,6 +91,8 @@ def post_detail(post_idx):
         user_idx = 2
     
     post_detail = product_dao.post_detail(post_idx)
+    post_file = product_dao.post_file_list(post_idx)
+    post_detail['file'] = post_file
 
     if post_detail['comment_count'] != 0:
         comments = product_dao.post_comment(post_idx)
@@ -105,7 +107,7 @@ def post_detail(post_idx):
         post_detail['sub_yn'] = 'N'
     else:
         post_detail['sub_yn'] = 'Y'
-            
+        
     html = render_template('detail.html', data=post_detail)
     return html
 
