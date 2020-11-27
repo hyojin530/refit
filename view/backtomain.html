@@ -1,16 +1,16 @@
 
 <!DOCTYPE html>
 
-html boi
+<html>
 <head>
 
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/reset.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/reset.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/backtomain.css')}}">
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/main.css')}}">
     <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/hamburgernav.css')}}">
     <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/paycomplete.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/shoppingcart.css')}}">
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/bootstrap.min.css')}}">
 
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -88,61 +88,39 @@ html boi
 				</div>
 
 			<div class="content">
-			    
                 <div id="main_container">
 
                     <div class="hanger">
-                     <img src="{{url_for('static',filename='images/hanger.png')}}">
+                        <img src="{{url_for('static',filename='images/hanger.png')}}">
                     </div>
 
-                    <div class="photobox">
-                        
-                    
-                        <div class="photobox_img">
-                            <img src="{{data_list.location[8:]}}">
-
-                        </div>
-
-                    </div>
-
-                    <div class="checkproduct">
-                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                        <label class="form-check-label" for="defaultCheck1">
-                        
-                            구매 상품 확인
-
-
-                        </label>
-                        
-                    </div>
-
-                    <div class="productdetail">
-                       <p class="productdetail_1"><div class="productdetail_title">상의:</div> 폴로2020f/w니트</p>
-                       <p class="productdetail_size"> <div class="productdetail_title">사이즈:</div> M </p>
-                       <p class="productdetail_info"><div class="productdetail_title">특이사항:</div>없음</p>
-                       <p class="productdetail_comment"><div class="productdetail_title">Seller Comment:</div>sdfklsjfd</p>
-                       <p class="productdetail_proof"><div class="productdetail_title">구매 증명서:</div>
-                        영수증 유무 : 무
-                        품질 보증서 : 유
-                        </p>
+                    <div style="align-items: center;">구매가 완료되었습니다!</div> 
                 
-            
-                    
+
+
+                    <div class="page123">
+                      <button class="fun-btn" style="align-items: center;">Back to save Earth</button>
                     </div>
+                  
+                  </div> 
 
-                    <div class="price">
-                        가격: <div class="price_value"> {{data_list.price}}</div>
-                    </div>
+                  <script>
+                        $('.fun-btn').on('click', function(event) {
+                        $(this).toggleClass('start-fun');
+                        var $page = $('.page');
+                        $page.toggleClass('color-bg-start')
+                            .toggleClass('bg-animate-color');
 
-                    <div class="checkout">
-                        <button type="button" onclick="location.href = '/backtomain'">결제하기</button>
-                      </div>
-            
-                       
-		
+                        //change text when when button is clicked
 
-			
-			    </div>
+                        $(this).hasClass('start-fun') ?
+                            $(this).text('stop the fun') :
+                            $(this).text('start the fun');
+
+                        });
+
+                  </script>
+
 
 		    </div>
     </div>
@@ -172,6 +150,7 @@ html boi
 <script src="{{url_for('static',filename='js/shoppingcart.js')}}"></script>
 <script src="{{url_for('static',filename='js/main.js')}}"></script>
 <script src="{{url_for('static',filename='js/vue.js')}}"></script>
+
 
 </body>
 </html>
