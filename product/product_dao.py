@@ -351,3 +351,32 @@ def delete_wish(user_idx, post_idx):
         if conn is not None: conn.close()
         
     return 'OK'
+
+
+def search_post(text):
+    sql = '''select posts.post_idx, posts.user_idx, post_like, location 
+             from posts inner join post_file on posts.post_idx = post_file.post_idx
+             where file_idx in (select min(file_idx) from post_file group by post_idx)
+             and description like '''+"'%%#"+text+"%%'"
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+    finally:
+        if conn is not None: conn.close()
+        
+    if not result:
+        return False
+    
+    data_list = []
+    for row in result:
+        temp_dict = {}
+        temp_dict['post_idx'] = row[0]
+        temp_dict['user_idx'] = row[1]
+        temp_dict['post_like'] = row[2]
+        temp_dict['img_url'] = row[3]
+        data_list.append(temp_dict)
+    print(data_list)
+    return data_list

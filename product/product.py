@@ -20,8 +20,17 @@ def main_page():
 #검색 get 얘기가 필요..
 @product_blue.route('/search', methods=['get'])
 def search_posts():
-    html = render_template('/search_result') #검색 결과 페이지
-    return html
+    if 'user_idx' in session:
+        user_idx = session['user_idx']
+    else:
+        user_idx = 2
+        
+    text = request.args.get('text')
+
+    result = product_dao.search_post(text)
+
+    html = render_template('search.html', data=result) #검색 결과 페이지
+    return 'OK'
 
 #등록페이지 얘기가 필요..
 @product_blue.route('/register')
