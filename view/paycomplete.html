@@ -99,8 +99,9 @@ html boi
                         
                     
                         <div class="photobox_img">
-                            <img src="{{data_list.location[8:]}}">
-
+                            {% for datalist in data_list %}
+                                <img src="{{datalist.location[8:]}}">
+                            {% endfor %}
                         </div>
 
                     </div>
